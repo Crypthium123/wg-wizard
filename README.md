@@ -26,7 +26,7 @@ L'outil est écrit en Python 3 et n'utilise que la bibliothèque standard. Il pi
 ## Installation
 
 ```bash
-git clone https://github.com/<utilisateur>/wg-wizard.git
+git clone https://github.com/Crypthium123/wg-wizard.git
 cd wg-wizard
 sudo python3 wg_wizard.py
 ```

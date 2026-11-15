@@ -497,8 +497,14 @@ def cmd_add(name: str | None = None, full_tunnel: bool | None = None) -> None:
     step("QR code (application WireGuard sur smartphone : Ajouter un tunnel > Scanner)")
     show_qr(client_conf)
     step("Récupération du fichier sur un ordinateur")
-    info(f"Fichier : {client_file}")
-    info(f"Depuis votre PC : scp utilisateur@{meta['ENDPOINT']}:{client_file} .")
+    user = os.environ.get("SUDO_USER") or "utilisateur"
+    host = f"{user}@{meta['ENDPOINT']}"
+    info(f"Fichier sur le serveur : {client_file} (lisible par root uniquement)")
+    info("Depuis un PC Windows (PowerShell) :")
+    info(f'  ssh {host} "sudo cat {client_file}" | Out-File -Encoding ascii {name}.conf')
+    info("Depuis un PC Linux ou macOS :")
+    info(f'  ssh {host} "sudo cat {client_file}" > {name}.conf')
+    info("Un simple 'scp' ne fonctionne pas : /etc/wireguard est réservé à root.")
     warn("Ce fichier contient une clé privée : ne le transmettez jamais par un canal non chiffré "
          "et supprimez les copies inutiles.")
 

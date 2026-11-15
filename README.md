@@ -26,7 +26,7 @@ L'outil est écrit en Python 3 et n'utilise que la bibliothèque standard. Il pi
 ## Installation
 
 ```bash
-git clone https://github.com/Crypthium123/wg-wizard.git
+git clone https://github.com/<utilisateur>/wg-wizard.git
 cd wg-wizard
 sudo python3 wg_wizard.py
 ```
@@ -52,7 +52,11 @@ Le mode `--dry-run` peut être essayé sur n'importe quelle machine, sans droits
 ## Utiliser un profil sur un appareil
 
 - **Smartphone** : installer l'application WireGuard, puis « Ajouter un tunnel » > « Scanner un QR code ».
-- **Ordinateur** : récupérer le fichier `.conf` avec `scp utilisateur@<ip-du-serveur>:/etc/wireguard/clients/<nom>.conf .`, l'importer dans le client WireGuard, puis supprimer la copie locale du fichier.
+- **Ordinateur** : le fichier est lisible par root uniquement, donc `scp` ne convient pas. Récupérer le contenu via SSH et `sudo` :
+  - Windows (PowerShell) : `ssh utilisateur@<ip-du-serveur> "sudo cat /etc/wireguard/clients/<nom>.conf" | Out-File -Encoding ascii <nom>.conf` (l'option d'encodage évite un fichier UTF-16 que WireGuard peut refuser).
+  - Linux / macOS : `ssh utilisateur@<ip-du-serveur> "sudo cat /etc/wireguard/clients/<nom>.conf" > <nom>.conf`
+  
+  Importer ensuite le fichier dans le client WireGuard, puis supprimer la copie locale. Sous Linux, le nom du profil doit faire 15 caractères maximum pour `wg-quick`.
 
 Chaque appareil doit disposer de son propre profil. Deux machines utilisant le même fichier simultanément provoquent des déconnexions en boucle.
 
@@ -91,10 +95,6 @@ Le port UDP de WireGuard ne répond à aucun paquet dépourvu de signature crypt
 ## Licence
 
 MIT
-
-
-
-
 
         6E6520636F706965207061732C2063726565
   Auteur: Crypthium

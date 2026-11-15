@@ -53,6 +53,18 @@ PEER_RE = re.compile(
 
 DRY_RUN = False
 
+__version__ = "1.0.0"
+__author__ = "Crypthium"
+
+BANNER = r"""
+ ██████╗██████╗ ██╗   ██╗██████╗ ████████╗██╗  ██╗██╗██╗   ██╗███╗   ███╗
+██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗╚══██╔══╝██║  ██║██║██║   ██║████╗ ████║
+██║     ██████╔╝ ╚████╔╝ ██████╔╝   ██║   ███████║██║██║   ██║██╔████╔██║
+██║     ██╔══██╗  ╚██╔╝  ██╔═══╝    ██║   ██╔══██║██║██║   ██║██║╚██╔╝██║
+╚██████╗██║  ██║   ██║   ██║        ██║   ██║  ██║██║╚██████╔╝██║ ╚═╝ ██║
+ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝        ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝     ╚═╝
+"""
+
 
 class WizardError(Exception):
     """Erreur attendue, affichée sans trace d'exécution."""
@@ -655,7 +667,14 @@ MENU = [
 ]
 
 
+def print_banner() -> None:
+    print(_c("1;36", BANNER))
+    print(_c("1", f"  Assistant d'installation et de gestion WireGuard  |  v{__version__}"))
+    print(f"  Créé par {__author__}  |  Copyright © 2025 {__author__}")
+
+
 def interactive_menu() -> None:
+    print_banner()
     while True:
         print(_c("1", "\nwg-wizard : assistant WireGuard"))
         if DRY_RUN:
@@ -677,8 +696,9 @@ def interactive_menu() -> None:
 
 def main() -> int:
     global DRY_RUN
-    parser = argparse.ArgumentParser(description="Assistant d'installation WireGuard pour débutants.")
+    parser = argparse.ArgumentParser(description="Assistant d'installation et de gestion d'un serveur VPN WireGuard.")
     parser.add_argument("--dry-run", action="store_true", help="simuler sans rien modifier")
+    parser.add_argument("--version", action="version", version=f"wg-wizard {__version__}, créé par {__author__}")
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("install")
     for name in ("add", "qr", "remove"):
@@ -716,15 +736,12 @@ if __name__ == "__main__":
 
 
 r"""
-__/\\\\\_____/\\\________/\\\\\\\\\__/\\\\\\\\\\\\\__________/\\\\\\\\\_        
- _\/\\\\\\___\/\\\_____/\\\////////__\/\\\/////////\\\_____/\\\////////__       
-  _\/\\\/\\\__\/\\\___/\\\/___________\/\\\_______\/\\\___/\\\/___________      
-   _\/\\\//\\\_\/\\\__/\\\_____________\/\\\\\\\\\\\\\/___/\\\_____________     
-    _\/\\\\//\\\\/\\\_\/\\\_____________\/\\\/////////____\/\\\_____________    
-     _\/\\\_\//\\\/\\\_\//\\\____________\/\\\_____________\//\\\____________   
-      _\/\\\__\//\\\\\\__\///\\\__________\/\\\______________\///\\\__________  
-       _\/\\\___\//\\\\\____\////\\\\\\\\\_\/\\\________________\////\\\\\\\\\_ 
-        _\///_____\/////________\/////////__\///____________________\/////////__
+ ██████╗██████╗ ██╗   ██╗██████╗ ████████╗██╗  ██╗██╗██╗   ██╗███╗   ███╗
+██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗╚══██╔══╝██║  ██║██║██║   ██║████╗ ████║
+██║     ██████╔╝ ╚████╔╝ ██████╔╝   ██║   ███████║██║██║   ██║██╔████╔██║
+██║     ██╔══██╗  ╚██╔╝  ██╔═══╝    ██║   ██╔══██║██║██║   ██║██║╚██╔╝██║
+╚██████╗██║  ██║   ██║   ██║        ██║   ██║  ██║██║╚██████╔╝██║ ╚═╝ ██║
+ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝        ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝     ╚═╝
 
         6E6520636F706965207061732C2063726565
   Auteur: Crypthium

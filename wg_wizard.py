@@ -173,6 +173,16 @@ def detect_wan_interface() -> str | None:
     return match.group(1) if match else None
 
 
+def port_in_use(port: int) -> str | None:
+    """Retourne le nom du processus qui écoute déjà en UDP sur ce port, sinon None."""
+    out = run(["ss", "-ulnpH"], mutating=False, check=False)
+    for line in out.splitlines():
+        if re.search(rf"[:\]]{port}\s", line):
+            match = re.search(r'users:\(\("([^"]+)"', line)
+            return match.group(1) if match else "un processus inconnu"
+    return None
+
+
 def detect_ssh_port() -> int:
     """Port SSH actuellement utilisé, pour ne jamais s'enfermer dehors."""
     conn = os.environ.get("SSH_CONNECTION", "").split()
@@ -326,6 +336,14 @@ def cmd_install() -> None:
     if not port_raw.isdigit() or not 1 <= int(port_raw) <= 65535:
         raise WizardError("Port invalide.")
     port = int(port_raw)
+    if not DRY_RUN:
+        owner = port_in_use(port)
+        if owner:
+            raise WizardError(
+                f"Le port {port}/udp est déjà utilisé par '{owner}'. "
+                "Arrêtez ce service (ex. 'docker compose stop' pour un ancien wg-easy) "
+                "ou choisissez un autre port. Rien n'a été modifié."
+            )
     ssh_port = detect_ssh_port()
 
     step("Récapitulatif")
@@ -364,7 +382,16 @@ def cmd_install() -> None:
     ok(f"UFW actif : {ssh_port}/tcp et {port}/udp autorisés")
 
     step("Démarrage du service")
-    run(["systemctl", "enable", "--now", f"wg-quick@{IFACE}"])
+    try:
+        run(["systemctl", "enable", "--now", f"wg-quick@{IFACE}"])
+    except WizardError as exc:
+        journal = run(["journalctl", "-u", f"wg-quick@{IFACE}", "-n", "8", "--no-pager"],
+                      mutating=False, check=False)
+        raise WizardError(
+            f"{exc}\n\n  Derniers messages du journal :\n{journal}\n\n"
+            f"  La configuration est déjà écrite. Corrigez la cause, puis lancez : "
+            f"systemctl restart wg-quick@{IFACE}"
+        )
     ok("Service WireGuard démarré et activé au démarrage")
 
     warn("Si votre hébergeur dispose d'un pare-feu externe, autorisez aussi le port "

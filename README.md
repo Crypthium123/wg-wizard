@@ -1,5 +1,7 @@
 # wg-wizard
 
+Auteur : **Crypthium** | Version 1.0.0
+
 Assistant en ligne de commande pour installer et administrer un serveur VPN WireGuard sur un VPS Debian ou Ubuntu, sans éditer de fichier de configuration à la main.
 
 L'outil est écrit en Python 3 et n'utilise que la bibliothèque standard. Il pilote directement WireGuard (`wireguard-tools`), sans conteneur intermédiaire.
@@ -95,7 +97,3 @@ Le port UDP de WireGuard ne répond à aucun paquet dépourvu de signature crypt
 ## Licence
 
 MIT
-
-        6E6520636F706965207061732C2063726565
-  Auteur: Crypthium
-  COPYRIGHT © 2025 Crypthium — Tous droits réservés

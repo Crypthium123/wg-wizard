@@ -94,9 +94,8 @@ MIT
 
 
 
-/*
+
 
         6E6520636F706965207061732C2063726565
   Auteur: Crypthium
   COPYRIGHT © 2025 Crypthium — Tous droits réservés
- */
